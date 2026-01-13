@@ -9,7 +9,8 @@ export default function labs() {
         id="wd-repo-link"
       >
         Link to this Github Repo
-      </Link>
+      </Link>{" "}
+      <br />
       <Link
         href="https://kambaz-next-js-weld-xi.vercel.app/account/signin"
         id="wd-repo-link"
