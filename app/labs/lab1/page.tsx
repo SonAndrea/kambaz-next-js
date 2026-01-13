@@ -87,7 +87,7 @@ export default function lab1() {
         <ul id="wd-your-books">
           <li>Also Dune</li>
           <li>Also Lord of the Rings</li>
-          <li>Hitchiker's Guide to the Galaxy</li>
+          <li>Hitchhiker's Guide to the Galaxy</li>
         </ul>
       </div>
       <div id="wd-tables">
