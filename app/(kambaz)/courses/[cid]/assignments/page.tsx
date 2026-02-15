@@ -1,3 +1,6 @@
+"use client";
+import { useParams } from "next/navigation";
+import * as db from "../../../database";
 import Link from "next/link";
 import AssignmentControls from "./AssignmentsControls";
 import ListGroupItem from "react-bootstrap/esm/ListGroupItem";
@@ -7,6 +10,9 @@ import AssignmentControlButtons from "./AssignmentControlButtons";
 import LessonControlButtons from "../modules/LessonControlButtons";
 
 export default function Assignments() {
+  const { cid } = useParams();
+  const assignments = db.assignments;
+
   return (
     <div>
       <AssignmentControls /> <br /> <br />
@@ -17,42 +23,29 @@ export default function Assignments() {
             <AssignmentControlButtons />
           </div>
           <ListGroup className="wd-lessons rounded-0">
-            <ListGroupItem className="wd-lesson p-3 ps-1">
-              <BsGripVertical className="me-2 fs-3" />
-              <Link href="assignments/a1" id="wd-a1-link">
-                A1 - ENV + HTML
-              </Link>{" "}
-              <LessonControlButtons />
-              <p id="wd-assignment-text">
-                Multiple Modules | <b>Not Available until</b> May 6 at 12:00am |{" "}
-                <br />
-                <b>Due</b> May 13 at 11:59pm | 100 pts
-              </p>{" "}
-            </ListGroupItem>
-            <ListGroupItem className="wd-lesson p-3 ps-1">
-              <BsGripVertical className="me-2 fs-3" />
-              <Link href="assignments/a1" id="wd-a2-link">
-                A2 - CSS + BOOTSTRAP
-              </Link>{" "}
-              <LessonControlButtons />
-              <p id="wd-assignment-text">
-                Multiple Modules | <b>Not Available until</b> May 13 at 12:00am
-                | <br />
-                <b>Due</b> May 20 at 11:59pm | 100 pts
-              </p>
-            </ListGroupItem>
-            <ListGroupItem className="wd-lesson p-3 ps-1">
-              <BsGripVertical className="me-2 fs-3" />
-              <Link href="assignments/a1" id="wd-a3-link">
-                A3 - JAVASCRIPT + REACT
-              </Link>{" "}
-              <LessonControlButtons />
-              <p id="wd-assignment-text">
-                Multiple Modules | <b>Not Available until</b> May 20 at 12:00am
-                | <br />
-                <b>Due</b> May 27 at 11:59pm | 100 pts
-              </p>
-            </ListGroupItem>
+            {assignments
+              .filter((assignment: any) => assignment.course === cid)
+              .map((assignment: any) => {
+                const thisLink = `/courses/${cid}/assignments/editor/${assignment._id}`;
+                return (
+                  <ListGroupItem
+                    className="wd-lesson p-3 ps-1"
+                    key={assignment.title}
+                  >
+                    <BsGripVertical className="me-2 fs-3" />
+                    <Link href={thisLink} id={assignment.title}>
+                      {assignment.title}
+                    </Link>{" "}
+                    <LessonControlButtons />
+                    <p id="wd-assignment-text">
+                      Multiple Modules | <b>Not Available until</b> May 6 at
+                      12:00am | <br />
+                      <b>Due</b> {assignment.dueDate} at {assignment.dueTime} |{" "}
+                      {assignment.points} pts
+                    </p>{" "}
+                  </ListGroupItem>
+                );
+              })}
           </ListGroup>
         </ListGroupItem>
       </ListGroup>
