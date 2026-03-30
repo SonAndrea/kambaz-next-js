@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";

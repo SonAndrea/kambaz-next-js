@@ -11,11 +11,10 @@ import {
   Button,
   FormControl,
 } from "react-bootstrap";
-import * as db from "../database";
-import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
+import * as client from "../courses/client";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse } from "../courses/reducer";
+import { setCourses } from "../courses/reducer";
 import { RootState } from "../store";
 
 export default function Dashboard() {
@@ -32,6 +31,44 @@ export default function Dashboard() {
     description: "New Description",
   });
 
+  const fetchCourses = async () => {
+    try {
+      const courses = await client.findMyCourses();
+      dispatch(setCourses(courses));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const onAddNewCourse = async () => {
+    const newCourse = await client.createCourse(course);
+    dispatch(setCourses([...courses, newCourse]));
+  };
+
+  const onDeleteCourse = async (courseId: string) => {
+    const status = await client.deleteCourse(courseId);
+    dispatch(setCourses(courses.filter((course) => course._id !== courseId)));
+  };
+
+  const onUpdateCourse = async () => {
+    await client.updateCourse(course);
+    dispatch(
+      setCourses(
+        courses.map((c) => {
+          if (c._id === course._id) {
+            return course;
+          } else {
+            return c;
+          }
+        }),
+      ),
+    );
+  };
+
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -40,14 +77,14 @@ export default function Dashboard() {
         <button
           className="btn btn-primary float-end"
           id="wd-add-new-course-click"
-          onClick={() => dispatch(addNewCourse(course))}
+          onClick={onAddNewCourse}
         >
           {" "}
           Add{" "}
         </button>
         <button
           className="btn btn-warning float-end me-2"
-          onClick={() => dispatch(updateCourse(course))}
+          onClick={onUpdateCourse}
           id="wd-update-course-click"
         >
           Update{" "}
@@ -101,7 +138,7 @@ export default function Dashboard() {
                     <button
                       onClick={(event) => {
                         event.preventDefault();
-                        dispatch(deleteCourse(course._id));
+                        onDeleteCourse(course._id);
                       }}
                       className="btn btn-danger float-end"
                       id="wd-delete-course-click"

@@ -1,0 +1,33 @@
+{
+  "type": "module",
+  "name": "kambaz-node-server-app",
+  "version": "1.0.0",
+  "description": "Node.js HTTP Web server for the Kambaz application",
+  "keywords": [
+    "Node",
+    "REST",
+    "Server",
+    "HTTP",
+    "Web",
+    "Development",
+    "CS4550"
+  ],
+  "homepage": "https://github.com/SonAndrea/kambaz-next-js#readme",
+  "bugs": {
+    "url": "https://github.com/SonAndrea/kambaz-next-js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SonAndrea/kambaz-next-js.git"
+  },
+  "license": "ISC",
+  "author": "Andrea Son",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

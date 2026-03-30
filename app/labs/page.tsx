@@ -39,6 +39,11 @@ export default function labs() {
           </Link>
         </li>
         <li>
+          <Link href="/labs/lab5" id="wd-lab4-link">
+            Lab 5: Node Basics{" "}
+          </Link>
+        </li>
+        <li>
           <Link href="/">Kambaz </Link>
         </li>
       </ul>

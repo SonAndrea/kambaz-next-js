@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "kambaz-node-server-app/kambaz/database/index.js", "kambaz/database/index.js"  ],
   "exclude": ["node_modules"]
 }
