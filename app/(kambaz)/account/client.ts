@@ -28,3 +28,5 @@ export const signout = async () => {
   const response = await axiosWithCredentials.post(`${USERS_API}/signout`);
   return response.data;
 };
+
+console.log("HTTP_SERVER:", HTTP_SERVER);

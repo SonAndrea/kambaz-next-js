@@ -11,7 +11,7 @@ export default function KambazLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <Provider store={store}>
-      <Session>
+      <>
         <div id="wd-kambaz">
           <div className="d-flex">
             <div>
@@ -23,7 +23,7 @@ export default function KambazLayout({
             </div>
           </div>
         </div>
-      </Session>
+      </>
     </Provider>
   );
 }

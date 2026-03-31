@@ -4,10 +4,11 @@ import Lab5 from "./lab5/index.js";
 import cors from "cors";
 import db from "./kambaz/database/index.js";
 import UserRoutes from "./kambaz/users/routes.js";
-import "dotenv/config";
 import session from "express-session";
 import CourseRoutes from "./kambaz/courses/routes.js";
 import AssignmentsRoutes from "./kambaz/assignments/routes.js";
+import "dotenv/config";
+import ModulesRoutes from './kambaz/modules/routes.js';
 
 const app = express()
 
@@ -37,7 +38,8 @@ app.use(express.json());
 Hello(app);
 UserRoutes(app, db);
 CourseRoutes(app, db);
+ModulesRoutes(app, db);
 AssignmentsRoutes(app, db);
 Lab5(app);
 
-app.listen(process.env.PORT || 4000)
+app.listen(process.env.PORT || 4000);
