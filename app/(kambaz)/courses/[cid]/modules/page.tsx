@@ -33,77 +33,90 @@ export default function Modules() {
 
   useEffect(() => {
     fetchModules();
-  }, [cid]); // Ensure modules refresh if the course ID changes
+  }, [cid]);
 
   const onCreateModuleForCourse = async () => {
     if (!cid) return;
     const newModule = { name: moduleName, course: cid };
     const module = await client.createModuleForCourse(cid as string, newModule);
-    dispatch(addModule(module)); // Correct: Use the specific Redux action
-    setModuleName(""); // Clear the input after creation
+    dispatch(addModule(module));
+    setModuleName("");
   };
 
   const onRemoveModule = async (moduleId: string) => {
-    await client.deleteModule(moduleId);
-    dispatch(deleteModule(moduleId)); // Correct: Let the reducer handle the filtering
+    if (cid) await client.deleteModule(cid, moduleId);
+    dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
   };
 
   const onUpdateModule = async (module: any) => {
-    await client.updateModule(module);
-    dispatch(updateModule(module)); // Correct: Let the reducer update the state
+    if (cid) await client.updateModule(cid, module);
+    const newModules = modules.map((m: any) =>
+      m._id === module._id ? module : m,
+    );
+    dispatch(setModules(newModules));
   };
 
   return (
-    <div className="wd-modules-page">
+    <div className="wd-modules-page d-flex flex-column w-100">
+      {/* Row 1: controls bar */}
       <ModulesControls
         setModuleName={setModuleName}
         moduleName={moduleName}
         addModule={onCreateModuleForCourse}
       />
-      <div className="mt-4">
-        {" "}
-        {/* Replaced <br/> tags with Bootstrap spacing */}
+
+      {/* Row 2: modules list */}
+      <div className="mt-4 w-100">
         <ListGroup className="rounded-0" id="wd-modules">
           {modules?.map((module: any) => (
             <ListGroupItem
               key={module._id}
               className="wd-module p-0 mb-5 fs-5 border-gray"
             >
-              <div className="wd-title p-3 ps-2 bg-secondary">
-                <BsGripVertical className="me-2 fs-3" />
-                {!module.editing && module.name}
-                {module.editing && (
-                  <FormControl
-                    className="w-50 d-inline-block"
-                    onChange={(e) =>
-                      // Temporary state update while typing
-                      dispatch(
-                        updateModule({ ...module, name: e.target.value }),
-                      )
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        onUpdateModule({ ...module, editing: false });
+              <div className="wd-title p-3 ps-2 bg-secondary d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center flex-grow-1">
+                  <BsGripVertical className="me-2 fs-3 flex-shrink-0" />
+                  {!module.editing && <span>{module.name}</span>}
+                  {module.editing && (
+                    <FormControl
+                      className="flex-grow-1"
+                      onChange={(e) =>
+                        dispatch(
+                          updateModule({ ...module, name: e.target.value }),
+                        )
                       }
-                    }}
-                    defaultValue={module.name}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          onUpdateModule({ ...module, editing: false });
+                        }
+                      }}
+                      defaultValue={module.name}
+                    />
+                  )}
+                </div>
+                <div className="flex-shrink-0">
+                  <ModuleControlButtons
+                    moduleId={module._id}
+                    deleteModule={(moduleId) => onRemoveModule(moduleId)}
+                    editModule={(moduleId) => dispatch(editModule(moduleId))}
                   />
-                )}
-                <ModuleControlButtons
-                  moduleId={module._id}
-                  deleteModule={(moduleId) => onRemoveModule(moduleId)}
-                  editModule={(moduleId) => dispatch(editModule(moduleId))}
-                />
+                </div>
               </div>
+
               {module.lessons && (
                 <ListGroup className="wd-lessons rounded-0">
                   {module.lessons.map((lesson: any) => (
                     <ListGroupItem
-                      className="wd-lesson p-3 ps-1"
+                      className="wd-lesson p-3 ps-1 d-flex align-items-center justify-content-between"
                       key={lesson._id}
                     >
-                      <BsGripVertical className="me-2 fs-3" /> {lesson.name}
-                      <LessonControlButtons />
+                      <div className="d-flex align-items-center">
+                        <BsGripVertical className="me-2 fs-3 flex-shrink-0" />
+                        <span>{lesson.name}</span>
+                      </div>
+                      <div className="flex-shrink-0">
+                        <LessonControlButtons />
+                      </div>
                     </ListGroupItem>
                   ))}
                 </ListGroup>
