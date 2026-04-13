@@ -46,4 +46,17 @@ ModulesRoutes(app);
 AssignmentsRoutes(app);
 Lab5(app);
 
-app.listen(process.env.PORT || 4000);
+const startServer = async () => {
+  try {
+    await mongoose.connect(CONNECTION_STRING);
+    console.log("Connected to MongoDB");
+    app.listen(process.env.PORT || 4000, () => {
+      console.log(`Server running on port ${process.env.PORT || 4000}`);
+    });
+  } catch (err) {
+    console.error("Failed to connect to MongoDB:", err);
+    process.exit(1);
+  }
+};
+ 
+startServer();
