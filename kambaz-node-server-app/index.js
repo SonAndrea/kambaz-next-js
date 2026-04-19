@@ -3,47 +3,65 @@ import mongoose from "mongoose";
 import Hello from "./Hello.js";
 import Lab5 from "./lab5/index.js";
 import cors from "cors";
-import db from "./kambaz/database/index.js";
-import UserRoutes from "./kambaz/users/routes.js";
 import session from "express-session";
+import PazzaRoutes from "./kambaz/pazza/routes.js";
+import UserRoutes from "./kambaz/users/routes.js";
 import CourseRoutes from "./kambaz/courses/routes.js";
 import AssignmentsRoutes from "./kambaz/assignments/routes.js";
-import "dotenv/config";
 import ModulesRoutes from './kambaz/modules/routes.js';
+import "dotenv/config";
 
-const CONNECTION_STRING = process.env.DATABASE_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz"
+const CONNECTION_STRING = process.env.DATABASE_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz";
 mongoose.connect(CONNECTION_STRING);
 
-const app = express()
+const app = express();
 
-app.use(cors({ 
+// Detect environment by checking for a production-only env var.
+// Do NOT rely on SERVER_ENV because it is often unset, which makes
+// the check default to the wrong branch.
+const isProduction = process.env.NODE_ENV === "production";
+
+app.use(cors({
   credentials: true,
   origin: process.env.CLIENT_URL || "http://localhost:3000",
-}));  
+}));
+
+if (isProduction) {
+  // Required so Express sees the real protocol when behind a proxy (Render, Heroku, etc.)
+  app.set("trust proxy", 1);
+}
 
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || "kambaz",
   resave: false,
   saveUninitialized: false,
+  cookie: isProduction
+    ? {
+        sameSite: "none",
+        httpOnly: true,
+        secure: true,
+        // NOTE: do NOT set domain — letting the browser infer it from the
+        // response host is more reliable. An explicit domain causes the cookie
+        // to be silently dropped if there is any mismatch with the request origin.
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      }
+    : {
+        sameSite: "lax",
+        httpOnly: true,
+        secure: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      },
 };
 
-if (process.env.SERVER_ENV !== "development") {
-  sessionOptions.proxy = true;
-  sessionOptions.cookie = {
-    sameSite: "none",
-    secure: true,
-    domain: process.env.SERVER_URL,
-  };
-}
 app.use(session(sessionOptions));
-
-app.use(express.json()); 
+app.use(express.json());
 
 Hello(app);
 UserRoutes(app);
 CourseRoutes(app);
 ModulesRoutes(app);
 AssignmentsRoutes(app);
+PazzaRoutes(app);
 Lab5(app);
 
 const startServer = async () => {
@@ -58,5 +76,5 @@ const startServer = async () => {
     process.exit(1);
   }
 };
- 
+
 startServer();

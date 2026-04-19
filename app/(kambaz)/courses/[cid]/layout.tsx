@@ -6,11 +6,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "next/navigation";
 import { RootState } from "../../store";
 
-export default async function CoursesLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function CoursesLayout({ children }: { children: ReactNode }) {
   const { cid } = useParams();
   const { courses } = useSelector((state: RootState) => state.coursesReducer);
   const course = courses.find((course: any) => course._id === cid);

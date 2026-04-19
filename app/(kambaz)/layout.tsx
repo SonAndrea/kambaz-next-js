@@ -5,13 +5,14 @@ import KambazNavigation from "./Navigation";
 import store from "./store";
 import { Provider } from "react-redux";
 import Session from "./account/Session";
+import ProjectFooter from "./ProjectFooter";
 
 export default function KambazLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
     <Provider store={store}>
-      <>
+      <Session>
         <div id="wd-kambaz">
           <div className="d-flex">
             <div>
@@ -22,8 +23,9 @@ export default function KambazLayout({
               {children}
             </div>
           </div>
+          <ProjectFooter />
         </div>
-      </>
+      </Session>
     </Provider>
   );
 }

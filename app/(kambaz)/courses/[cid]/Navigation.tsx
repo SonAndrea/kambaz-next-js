@@ -8,7 +8,7 @@ export default function CourseNavigation() {
   const links = [
     { label: "Home", path: "home" },
     { label: "Modules", path: "modules" },
-    { label: "Piazza", path: "piazza" },
+    { label: "Pazza", path: "pazza" },
     { label: "Zoom", path: "zoom" },
     { label: "Assignments", path: "assignments" },
     { label: "Quizzes", path: "quizzes" },

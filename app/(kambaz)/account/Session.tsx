@@ -24,7 +24,7 @@ export default function Session({ children }: { children: any }) {
   }, [dispatch]);
 
   if (pending) {
-    return <div>Loading session...</div>;
+    return null;
   }
 
   return children;
